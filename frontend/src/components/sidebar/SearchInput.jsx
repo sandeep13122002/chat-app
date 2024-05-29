@@ -1,14 +1,31 @@
 import React, { useState } from 'react'
 import { CgAbstract } from "react-icons/cg";
 import { FaSearch } from "react-icons/fa";
+import useConversation from '../../Zustand/useConversation';
+import useGetCoversations from '../../hooks/useGetCoversations';
+import toast from 'react-hot-toast';
 
 const SearchInput = () => {
 
   const [search, setSearch] = useState("");
+  const {setSelectedConversation}=useConversation()
+  const {conversations}=useGetCoversations();
+
 
   const handleSubmit = (e) => {
 		e.preventDefault();
-		
+		if(!search)return ;
+		if(search.length<3){
+			return toast.error('Search term must be at least 3 characters long')
+		}
+		const conversation=conversations.find((c)=>c.fullName.toLowerCase().includes(search.toLowerCase()))
+     
+		if(conversation){
+			setSelectedConversation(conversation)
+		}else{
+			toast.error("No such user found")
+		}
+
 	};
 
   return (
